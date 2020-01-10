@@ -1,5 +1,8 @@
 package com.benworld.domain;
 
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class PageMaker {
 	private int totalCount;
 	private int startPage;
@@ -74,6 +77,15 @@ public class PageMaker {
 	public String toString() {
 		return "PageMaker [totalCount=" + totalCount + ", startPage=" + startPage + ", endPage=" + endPage + ", prev="
 				+ prev + ", next=" + next + ", displayPageNum=" + displayPageNum + ", cri=" + cri + "]";
+	}
+	
+	public String makeQuery(int page) {
+		UriComponents uriComponents = 
+				UriComponentsBuilder.newInstance()
+				.queryParam("page", cri.getPage())
+				.queryParam("perPageNum", cri.getPerPageNum())
+				.build();
+		return uriComponents.toString();
 	}
 	
 }

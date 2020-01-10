@@ -49,10 +49,16 @@ public class BoardController {
 		model.addAttribute("list", service.listAll());
 	}
 	
-	@RequestMapping(value="/read", method = RequestMethod.GET)
-	public void read(@RequestParam("bno") int bno, Model model) throws Exception {
+	@RequestMapping(value="/read", method= RequestMethod.GET)
+	public void read(@RequestParam("bno") int bno, Model model)throws Exception {
 		model.addAttribute(service.read(bno));
 	}
+	
+	@RequestMapping(value="/readPage", method = RequestMethod.GET)
+	public void read(@RequestParam("bno") int bno,@ModelAttribute("cri") Criteria cri,  Model model) throws Exception {
+		model.addAttribute(service.read(bno));
+	}
+	
 	@RequestMapping(value="/remove", method = RequestMethod.POST)
 	public String remove(@RequestParam("bno") int bno, RedirectAttributes rttr) throws Exception{
 		service.remove(bno);
@@ -61,7 +67,18 @@ public class BoardController {
 		
 		return "redirect:/board/listAll";
 	}
-	
+	@RequestMapping(value="/removePage", method = RequestMethod.POST)
+	public String remove(@RequestParam("bno") int bno, Criteria cri, RedirectAttributes rttr) throws Exception{
+		service.remove(bno);
+		
+		rttr.addAttribute("page", cri.getPage());
+		rttr.addAttribute("perPageName", cri.getPerPageNum());
+		
+		
+		rttr.addFlashAttribute("msg", "SUCCESS");
+		
+		return "redirect:/board/listAll";
+	}	
 	@RequestMapping(value="/modify", method=RequestMethod.GET)
 	public void modifyGET(int bno, Model model)throws Exception{
 		model.addAttribute(service.read(bno));
@@ -71,6 +88,23 @@ public class BoardController {
 		logger.info("mod post.........");
 		
 		service.modify(vo);
+		
+		rttr.addFlashAttribute("msg", "SUCCESS");
+		
+		return "redirect:/board/listAll";
+	}
+	
+	@RequestMapping(value="/modifyPage", method=RequestMethod.GET)
+	public void modifyPagingGET(@RequestParam("bno") int bno, @ModelAttribute("cri")Criteria cri, Model model) throws Exception {
+		
+		model.addAttribute(service.read(bno));
+	}
+	@RequestMapping(value="/modifyPage", method=RequestMethod.POST)
+	public String modifyPOST(BoardVO vo, Criteria cri, RedirectAttributes rttr) throws Exception {
+		
+		service.modify(vo);
+		rttr.addAttribute("page", cri.getPage());
+		rttr.addAttribute("perPageNum", cri.getPerPageNum());
 		
 		rttr.addFlashAttribute("msg", "SUCCESS");
 		
@@ -93,4 +127,5 @@ public class BoardController {
 		pm.setTotalCount(service.listcountCriteria(cri));
 		model.addAttribute("pageMaker", pm);
 	}
+
 }
