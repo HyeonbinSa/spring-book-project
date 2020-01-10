@@ -46,4 +46,5 @@
 			<url-pattern>/*</url-pattern>
 		</fileter-mapping>
 	</fileter>
+	<beans:property name="contentType" value="text/html; charset=UTF-8" />
 </web-app>
